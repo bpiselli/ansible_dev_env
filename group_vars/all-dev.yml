@@ -1,0 +1,24 @@
+---
+# ENV
+env: dev
+env_http_protocol: "http"
+
+#Symfony
+symfony_env: "{{ env }}"
+symfony_web_file: "app_dev"
+symfony_web_files_enabled: "app|app_dev|config"
+
+## Mandrill Auth user
+mandrill_auth:
+   password: "81a3ULkQ5Ajpg05CMJoZQA"
+
+source_folder: "~/Dev"
+
+## Apps & Domains
+ets:
+  site:
+    host: "{{ env_prefix }}site.{{ env_domain }}"
+    url: "http://{{ env_prefix }}site.{{ env_domain }}"
+  hipchat:
+    room: "2183408"
+  release_path_current: ''

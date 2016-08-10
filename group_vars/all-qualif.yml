@@ -1,0 +1,20 @@
+---
+# ENV
+env: qualif
+
+#Symfony
+symfony_env: prod
+symfony_web_file: "app"
+symfony_web_files_enabled: "app"
+
+## Mandrill Auth user
+mandrill:
+  webhooks:
+    key: "BvFILeF1RF4IF5u2RF5F9w"
+mandrill_auth:
+  password: "81a3ULkQ5Ajpg05CMJoZQA"
+
+## Apps & Domains
+ets:
+  hipchat:
+    room: "2183408"

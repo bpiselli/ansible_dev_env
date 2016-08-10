@@ -1,0 +1,357 @@
+---
+# ENV variables
+env: qualif
+env_domain: "etsgbv-work.com"
+env_prefix: "{{ env }}."
+env_http_protocol: "https"
+
+# git
+git_branch: "master"
+
+# Ansible variables
+ansible_data_path: "{{ playbook_dir }}/passwords/"
+
+# System variables
+timezone: "Europe/Paris"
+gulp_version: "latest"
+deploy_version: "{{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"
+
+archi_packages: ["git","htop","curl","cron"]
+
+# Install ruby only for capistrano
+ruby_install_from_source: true
+ruby_install_gems:
+  - capistrano
+
+## MANDRILL
+mandrill:
+    host: "smtp.mandrillapp.com"
+    port: "587"
+    encryption: "tls"
+    webhooks:
+        key: "BvFILeF1RF4IF5u2RF5F9w"
+mandrill_auth:
+  username: "smtp.mandrillapp.com"
+  password: "MUST_be_defined_in_each_env_in_all-..._file"
+
+# Global parameters for ETS
+ets:
+    nginx:
+        user: "www-data"
+        group: "www-data"
+    hipchat:
+      room: "2183408"
+    github:
+        token: "4003b2a0dc7862f3be640fa6a9997dae114c86b3"
+    php5:
+        post_max_size: "8M"
+        default_charset: "UTF-8"
+        max_file_uploads: 20
+        file_uploads: 'On'
+        allow_url_fopen: 'On'
+    symfony2:
+        path_conf: "/app/config"
+    release_path_current: '/current'
+    salesforce:
+        host: "https://test.salesforce.com"
+        client_id: "{{ lookup('file', ansible_data_path + env + '/manual/salesforce/client_id') }}"
+        client_secret: "{{ lookup('file', ansible_data_path + env + '/manual/salesforce/client_secret') }}"
+        username: "{{ lookup('file', ansible_data_path + env + '/manual/salesforce/api_username') }}"
+        password: "{{ lookup('file', ansible_data_path + env + '/manual/salesforce/api_user_password') }}"
+    aev:
+        host: "{{ env_prefix }}emailviewer.{{ env_domain }}"
+        url: "http://{{ env_prefix }}emailviewer.{{ env_domain }}"
+        username: "e4team"
+        password: "e4password"
+    arm:
+        host: "{{ env_prefix }}arm.{{ env_domain }}"
+        path: "/var/www/ARM"
+        url: "http://{{ env_prefix }}arm.{{ env_domain }}"
+        delivery_email: "ecs-{{ env }}@{{ env_domain }}"
+        sso:
+            redirect_uri: "http://{{ env_prefix }}arm.{{ env_domain }}/frontend_dev.php/guard/login?login=new"
+        smtp:
+            host: "{{ mandrill.host }}"
+            port: "{{ mandrill.port }}"
+            encryption: "{{ mandrill.encryption }}"
+            username: "{{ mandrill_auth.username }}"
+            password: "{{ mandrill_auth.password }}"
+        type: "sf1"
+        git_repo: "git@github.com:ETSGlobal/ARM.git"
+    crm_sugar:
+        host: "{{ env_prefix }}fr.crm.{{ env_domain }}"
+        path: "/var/www/CRM"
+        url: "http://{{ env_prefix }}fr.crm.{{ env_domain }}"
+        type: "sf2"
+        git_repo: "git@github.com:ETSGlobal/CRM.git"
+    emo:
+        host: "{{ env_prefix }}emo.{{ env_domain }}"
+        path: "/var/www/EMO"
+        url: "{{ env_http_protocol }}://{{ env_prefix }}emo.{{ env_domain }}"
+        git_branch: "master"
+        git_repo: "git@github.com/ETSGlobal/EMO.git"
+        api:
+          arm:
+            user: "armony"
+            password: "{{ lookup('password', ansible_data_path + env + '/EMO_API_ARM chars=ascii_letters,digits') }}"
+        sso:
+          redirect_uri: "{{ env_http_protocol }}://{{ env_prefix }}emo.{{ env_domain }}/_backend/login"
+    esf:
+        host: "{{ env_prefix }}esf.{{ env_domain }}"
+        path: "/var/www/ESF"
+        url: "http://{{ env_prefix }}esf.{{ env_domain }}"
+        type: "sf2"
+        git_repo: "git@github.com:ETSGlobal/ESF.git"
+    ptpix:
+        host: "{{ env_prefix }}ptpix.etsglobal.org"
+        url: "http://{{ env_prefix }}ptpix.etsglobal.org"
+        api:
+            url: "http://{{ env_prefix }}ptpix.etsglobal.org/api/session"
+            user: "apiuser"
+            password: "mJiWrR6NUn"
+    satvm:
+        host: "{{ env_prefix }}satvm.{{ env_domain }}"
+        path: "/var/www/SATVM"
+        url: "http://{{ env_prefix }}satvm.{{ env_domain }}"
+        delivery_email: "ecs-{{ env }}@{{ env_domain }}"
+        type: "sf1"
+        git_repo: "git@github.com:ETSGlobal/SATVM.git"
+    site:
+        host: "{{ env_prefix }}www.{{ env_domain }}"
+        path: "/var/www/SITE"
+        http_scheme: "http"
+        url: "http://{{ env_prefix }}www.{{ env_domain }}"
+        email:
+            admin: "ebusiness@{{ env_domain }}"
+            sender: "noreply@{{ env_domain }}"
+            receiver: "ebusiness@{{ env_domain }}"
+        test_preparation_object_id: "123456"
+        google_tag_manager_identifier: "GTM-PHBMPX"
+        esf_controller: "app_dev_ez.php"
+        emo_controller: "app_dev.php"
+        search_engine_url: "https://www.preprod.e3-c1.{{ env_domain }}"
+        ssl_zone_setting: "enable"
+    sso:
+        host: "{{ env_prefix }}sso.{{ env_domain }}"
+        path: "/var/www/SSO"
+        url: "{{ env_http_protocol }}://{{ env_prefix }}sso.{{ env_domain }}"
+        type: "sf2"
+        git_repo: "git@github.com:ETSGlobal/SSO.git"
+
+# nginx
+nginx_symfony_default_conf: |
+  location ~ ^/(app|app_dev|config)\.php(/|$) {
+    fastcgi_pass unix:/run/php5-fpm-ets.sock;
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    include fastcgi_params;
+    fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param  HTTPS off;
+  }
+
+# Nginx http params
+nginx_http_params:
+  - sendfile "on"
+  - tcp_nopush "on"
+  - tcp_nodelay "on"
+  - keepalive_timeout "65"
+  - access_log "{{nginx_log_dir}}/access.log"
+  - error_log "{{nginx_log_dir}}/error.log"
+  - server_tokens off
+  - types_hash_max_size 2048
+  - proxy_buffer_size 128k
+  - proxy_buffers 4 256k
+  - proxy_busy_buffers_size 256k
+
+## DATABASES
+database_global:
+    host: "{{ groups['db-mysql'][0] }}"
+    port: "3306"
+    user: "etsglobal"
+    password: "{{ lookup('password', ansible_data_path + env + '/mysql/ETSglobal chars=ascii_letters,digits') }}"
+
+database:
+    all:
+        user: "all"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/ALL chars=ascii_letters,digits') }}"
+    emo:
+        ip: "192.168.42.21"
+        dump: "ets_mo"
+        host: "{{ database_global.host }}"
+        name: "emo"
+        user: "emo_symfony"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/EMO_symfony chars=ascii_letters,digits') }}"
+    emo_lexik:
+        host: "{{ database_global.host }}"
+        dump: "ets_translations"
+        name: "emo_lexik"
+        user: "emo_lexik"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/EMO_lexik chars=ascii_letters,digits') }}"
+    esf_lexik:
+        host: "{{ database_global.host }}"
+        name: "emo_lexik"
+        user: "esf_lexik"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/ESF_lexik chars=ascii_letters,digits') }}"
+    crm_sugar_fr:
+        dump: "crm_fr"
+        host: "{{ database_global.host }}"
+        name: "crm_sugar_fr"
+        user: "crm_sugar_fr"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/CRM_sugar_fr chars=ascii_letters,digits') }}"
+    crm_sugar_uk:
+        #dump: "crm_uk"
+        host: "{{ database_global.host }}"
+        name: "crm_sugar_uk"
+        user: "crm_sugar_uk"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/CRM_sugar_uk chars=ascii_letters,digits') }}"
+    crm_sugar_ee:
+        #dump: "crm_ee"
+        host: "{{ database_global.host }}"
+        name: "crm_sugar_ee"
+        user: "crm_sugar_ee"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/CRM_sugar_ee chars=ascii_letters,digits') }}"
+    crm_sugar_ea:
+        #dump: "crm_ea"
+        host: "{{ database_global.host }}"
+        name: "crm_sugar_ea"
+        user: "crm_sugar_ea"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/CRM_sugar_ea chars=ascii_letters,digits') }}"
+    crm_sugar_me:
+        #dump: "crm_me"
+        host: "{{ database_global.host }}"
+        name: "crm_sugar_me"
+        user: "crm_sugar_me"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/CRM_sugar_me chars=ascii_letters,digits') }}"
+    crm_sugar_jo:
+        #dump: "crm_jo"
+        host: "{{ database_global.host }}"
+        name: "crm_sugar_jo"
+        user: "crm_sugar_jo"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/CRM_sugar_jo chars=ascii_letters,digits') }}"
+    aev:
+        #dump: "emailviewer"
+        host: "{{ database_global.host }}"
+        name: "aev"
+        user: "aev_symfony"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/AEV_symfony chars=ascii_letters,digits') }}"
+    arm:
+        dump: "armony2"
+        host: "{{ database_global.host }}"
+        name: "arm"
+        user: "arm_symfony"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/ARM_symfony chars=ascii_letters,digits') }}"
+    site:
+        ip: "192.168.42.27"
+        dump: "ets_ezpublish"
+        host: "{{ database_global.host }}"
+        name: "site"
+        user: "site_ez"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/SITE_ez chars=ascii_letters,digits') }}"
+    infonet:
+        dump: "infonet"
+        host: "{{ database_global.host }}"
+        name: "infonet"
+        user: "infonet"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/INFONET chars=ascii_letters,digits') }}"
+    satvm:
+        dump: "ets_sat"
+        host: "{{ database_global.host }}"
+        name: "satvm"
+        user: "satvm"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/SATVM chars=ascii_letters,digits') }}"
+    swrg:
+        dump: "swrg"
+        host: "{{ database_global.host }}"
+        name: "swrg"
+        user: "swrg"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/SWRG chars=ascii_letters,digits') }}"
+    ptpix:
+        dump: "ptpix"
+        host: "{{ database_global.host }}"
+        name: "ptpix"
+        user: "ptpix"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/PTPIX chars=ascii_letters,digits') }}"
+    sso:
+        host: "{{ database_global.host }}"
+        dump: "ets_sso"
+        name: "sso"
+        user: "sso_symfony"
+        password: "{{ lookup('password', ansible_data_path + env + '/mysql/SSO_symfony chars=ascii_letters,digits') }}"
+
+## RabbitMQ
+rabbitmq_global:
+    version: "3.5.6"
+    host: "{{ groups['rabbitmq'][0] }}"
+    port: "5672"
+    user: "etsglobal"
+    password: "{{ lookup('password', ansible_data_path + env + '/mysql/ETSglobal chars=ascii_letters,digits') }}"
+
+rabbitmq:
+    emo:
+        host: "{{ rabbitmq_global.host }}"
+        user: "emo_symfony"
+        password: "{{ lookup('password', ansible_data_path + env + '/rabbitmq/EMO_symfony chars=ascii_letters,digits') }}"
+    aev:
+        host: "{{ rabbitmq_global.host }}"
+        user: "aev_symfony"
+        password: "{{ lookup('password', ansible_data_path + env + '/rabbitmq/AEV_symfony chars=ascii_letters,digits') }}"
+    satvm:
+        host: "{{ rabbitmq_global.host }}"
+        user: "satvm_symfony"
+        password: "{{ lookup('password', ansible_data_path + env + '/rabbitmq/SATVM_symfony chars=ascii_letters,digits') }}"
+    workers:
+        host: "{{ rabbitmq_global.host }}"
+        user: "workers"
+        password: "{{ lookup('password', ansible_data_path + env + '/rabbitmq/workers chars=ascii_letters,digits') }}"
+
+# Symfony
+symfony_app_path: "app/" # The PHP executable to use for all command line tasks
+symfony_php_path: php # The PHP executable to use for all command line tasks
+symfony_config_file_template: "parameters.dist.yml"
+
+symfony_run_composer: true
+symfony_composer_options: '--no-dev --optimize-autoloader --no-interaction'
+symfony_composer_self_update: true # Always attempt a composer self-update
+
+symfony_run_assets_install: true
+symfony_assets_options: '--no-interaction'
+
+symfony_run_assetic_dump: true
+symfony_assetic_options: '--no-interaction'
+
+symfony_run_cache_clear_and_warmup: true
+symfony_cache_options: ''
+
+###############################################################################
+# Enable the schema/migration tasks ONLY if you have 1 and only 1 host in your
+# inventory, since running migrations in parallel might lead to data corruption.
+# (see README.md for more details)
+###############################################################################
+symfony_run_doctrine_migrations: false
+symfony_doctrine_options: '--no-interaction'
+
+symfony_run_mongodb_schema_update: false
+symfony_mongodb_options: ''
+
+
+# SSO clients default values
+sso_client_arm:
+  client_id: "sso_client_arm_id"
+  client_secret: "sso_client_arm_secret"
+sso_client_emo:
+  client_id: "sso_client_emo_id"
+  client_secret: "sso_client_emo_secret"
+
+# LetsEncrypt
+letsencrypt:
+    emo:
+        webroot_path: /var/www/EMO/current/web
+    esf:
+        webroot_path: /var/www/ESF/current/web
+    sso:
+        webroot_path: /var/www/SSO/current/web
+    aev:
+        webroot_path: /var/www/AEV/current/web
+    ptpix:
+        webroot_path: /var/www/ptpix/current/web
+    arm:
+        webroot_path: /var/www/ARM/current/web

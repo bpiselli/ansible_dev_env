@@ -1,0 +1,33 @@
+## Ansible
+
+# Retry
+*.retry
+
+# galaxy roles
+ansible/roles/*
+!roles/bpiselli.dev.env.install
+
+# generated passwords
+ansible/data
+ansible/passwords
+
+## Vagrant generated files
+vagrant/.vagrant
+vagrant/deployment/.vagrant
+vagrant/mRemoteNGConf.xml*
+
+## Temporary files
+*~
+
+## Gedit
+*.md~
+
+## PhpStorm
+*.iml
+
+## Directory-based project format:
+.idea/
+
+## File-based project format:
+*.ipr
+*.iws

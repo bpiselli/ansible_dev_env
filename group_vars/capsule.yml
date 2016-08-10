@@ -1,0 +1,25 @@
+---
+env: dev
+
+lxc_config_path: "/var/lib/lxc"
+lxc_mount_host: ""
+lxc_mount_dest: ""
+lxc_authorized_keys: "{{ lookup('file', ansible_data_path + env + '/manual/lxc/authorized_keys') }}"
+
+containers:
+
+- name: db-mysql
+  host: db.mysql.etsgbv-work.com
+  groups: "db-mysql-{{ env }},all-{{ env }}"
+
+- name: rabbitmq
+  host: amqp.etsgbv-work.com
+  groups: "all-{{ env }}"
+
+- name: service_workers
+  host: dev.workers.etsgbv-work.com
+  groups: "services,services-{{ env }},all-{{ env }}"
+
+- name: web-aev
+  host: dev.workers.etsgbv-work.com
+  groups: "web,web-all-{{ env }},all-{{ env }}"

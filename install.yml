@@ -1,0 +1,13 @@
+---
+## Infractructure to build LXC with ansible
+
+# Install LXC on your machine or on the capsule directly
+- hosts: my-machine
+  become: yes
+  roles:
+  - bpiselli.dev.env.install
+
+# CI : Deploy keys
+#- hosts: web-all-dev:web-all-staging:web-all-preprod
+#  roles:
+#  - ets.ci-deploykeys

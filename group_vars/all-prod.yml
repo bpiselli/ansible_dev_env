@@ -1,0 +1,30 @@
+---
+# ENV
+env: prod
+env_domain: "etsglobal.org"
+env_prefix: ""
+
+# git
+git_branch: "stable"
+
+#Symfony
+symfony_env: "{{ env }}"
+symfony_web_file: "app"
+symfony_web_files_enabled: "app"
+
+## Mandrill Auth user
+mandrill_auth:
+  password: "3DjvoUMKFJS7ujX8haIRgA"
+
+# ETS specific parameters
+ets:
+  salesforce:
+    host: "https://login.salesforce.com"
+  emo:
+    host: "www.emo.{{ env_domain }}"
+    url: "https://www.emo.{{ env_domain }}"
+  hipchat:
+    room: "2183418"
+
+## Apps & Domains
+ets_url_prefix: ""

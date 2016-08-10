@@ -1,0 +1,10 @@
+---
+
+- name: Install apt packages
+  apt: name={{ item }} state=present
+  with_items: "{{ my_packages }}"
+
+- name: Install Git UP
+  gem: name=git-up state=present
+  when: my_machine_uses.git_up
+

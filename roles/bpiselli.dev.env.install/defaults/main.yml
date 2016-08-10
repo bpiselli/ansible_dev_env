@@ -1,0 +1,5 @@
+---
+my_packages: ['git','htop','curl','vim','ruby-dev','rubygems']
+my_machine_uses:
+  git: true
+  git_up: true

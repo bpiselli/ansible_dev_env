@@ -1,0 +1,19 @@
+---
+# ENV
+env: preprod
+
+# git
+git_branch: "stable"
+
+#Symfony
+symfony_env: prod
+symfony_web_file: "app"
+symfony_web_files_enabled: "app"
+
+## Mandrill Auth user
+mandrill_auth.password: "9Sbtz-x4JL2LqcAG2TfrLQ"
+
+## Apps & Domains
+ets:
+  hipchat:
+    room: "2183408"

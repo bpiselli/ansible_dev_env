@@ -1,0 +1,5 @@
+## this is where you change the default IP address with your vagrant VM IP address
+
+# capsule : local for ubuntu - remote for mac
+[my-machine]
+localhost ansible_connection=local
