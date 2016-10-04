@@ -8,3 +8,5 @@
   gem: name=git-up state=present
   when: my_machine_uses.git_up
 
+- name: Install terminator package
+  apt: name=terminator state=latest

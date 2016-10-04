@@ -5,7 +5,12 @@
 - hosts: my-machine
   become: yes
   roles:
-  - bpiselli.dev.env.install
+  - env.install
+  - sublimetext
+
+- hosts: my-machine
+  roles:
+  - phpstorm
 
 # CI : Deploy keys
 #- hosts: web-all-dev:web-all-staging:web-all-preprod
